@@ -7,14 +7,18 @@ export default function Home({ user }) {
   const [articles, setArticles] = useState([]);
   const [category, setCategory] = useState("general");
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+  // ✅ Relative URL works in both local & deployed environments
+  const API_URL = "";
 
   useEffect(() => {
     axios
       .get(`${API_URL}/api/news/${category}`)
-      .then((res) => setArticles(res.data))
+      .then((res) => {
+        console.log("Fetched Articles:", res.data);
+        setArticles(res.data);
+      })
       .catch((err) => console.error("Error fetching news:", err));
-  }, [category, API_URL]);
+  }, [category]);
 
   const handleSave = (article) => {
     if (!user) {
@@ -31,17 +35,16 @@ export default function Home({ user }) {
     <div className="p-4">
       <CategorySelector category={category} setCategory={setCategory} />
       {articles.length === 0 ? (
-  <p className="text-center mt-6 text-gray-600">No news found.</p>
-) : (
-  <div className="divide-y-2 divide-gray-300">
-    {articles.map((a, i) => (
-      <div key={i} className="py-6">
-        <NewsCard article={a} onSave={handleSave} />
-      </div>
-    ))}
-  </div>
-)}
-
+        <p className="text-center mt-6 text-gray-600">No news found.</p>
+      ) : (
+        <div className="divide-y-2 divide-gray-300">
+          {articles.map((a, i) => (
+            <div key={i} className="py-6">
+              <NewsCard article={a} onSave={handleSave} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
