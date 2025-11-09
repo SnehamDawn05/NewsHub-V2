@@ -18,7 +18,7 @@ router.get("/:category", async (req, res) => {
 
   try {
     // Build the request URL
-    const url = `https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=${process.env.NEWS_API_KEY}`;
+    const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${process.env.NEWS_API_KEY}`;
     console.log("📡 Fetching from:", url);
 
     const response = await axios.get(url);
