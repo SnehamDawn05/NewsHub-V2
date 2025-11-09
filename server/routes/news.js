@@ -1,3 +1,4 @@
+// server/routes/news.js
 import express from "express";
 import axios from "axios";
 import dotenv from "dotenv";
@@ -5,24 +6,21 @@ import dotenv from "dotenv";
 dotenv.config();
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const category = req.query.category || "general";
-  const apiKey = process.env.NEWS_API_KEY;
-
-  console.log("🟡 Category:", category);
-  console.log("🟡 API key exists?", !!apiKey);
-
-  const url = `https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=${apiKey}`;
-  console.log("🔵 Fetching:", url);
-
+// Fetch news by category
+router.get("/:category", async (req, res) => {
+  const category = req.params.category || "general";
   try {
-    const { data } = await axios.get(url);
-    console.log("🟢 News count:", data.articles?.length);
-    res.json(data.articles);
-  } catch (err) {
-    console.error("❌ News fetch error:", err.response?.status, err.message);
-    res.status(500).json({ error: err.message });
+    const url = `https://newsapi.org/v2/top-headlines?country=in&category=${category}&apiKey=${process.env.NEWS_API_KEY}`;
+    console.log("Fetching from:", url);
+    const response = await axios.get(
+  `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${process.env.NEWS_API_KEY}`
+);
+
+    console.log("Articles fetched:", response.data.articles.length);
+    res.json(response.data.articles);
+  } catch (error) {
+    console.error("Error fetching news:", error.message);
+    res.status(500).json({ message: "Failed to fetch news" });
   }
 });
-
 export default router;
